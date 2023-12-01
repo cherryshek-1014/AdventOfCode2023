@@ -15,6 +15,7 @@ wordToInt = {
 
 
 def findNumberInString(dataLine: str) -> list:
+    # (?=()) deals with overlapping matches e.g. eightwo would identify both eight and two
     regexFind = re.findall(
         r"(?=(\d|one|two|three|four|five|six|seven|eight|nine|zero))", dataLine
     )
