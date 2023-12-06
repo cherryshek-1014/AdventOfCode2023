@@ -6,13 +6,13 @@ def getNumberList(dataLine):
 
 
 def getNumberIndex(dataLine, number: str):
-    return [dataLine.index(number), dataLine.index(number) + len(number)]
+    return [dataLine.index(number), dataLine.index(number) + len(number) - 1]
 
 
 def getVerticalCoords(x: int, y, operator, maxlen):
     yaxis = [y - 1, y, y + 1]
     coordsToCheck = set()
-    if x < 1 or x == maxlen:
+    if x <= 1 or x == maxlen:
         return set()
     for axis in yaxis:
         if axis >= 0:
@@ -23,8 +23,8 @@ def getVerticalCoords(x: int, y, operator, maxlen):
 
 def getHorizontalCoords(x: list, y: int):
     coordsToCheck = set()
-    for xaxis in range(x[0], x[1]):
-        if y - 1 > 1:
+    for xaxis in range(x[0], x[1] + 1):
+        if y - 1 >= 1:
             coordsToCheck.add((xaxis, y - 1))
         if y + 1 >= 1:
             coordsToCheck.add((xaxis, y + 1))
@@ -46,7 +46,7 @@ def getSymbolCoords(data):
 #         for number in numberList:
 #             numberIndex = getNumberIndex(line, number)
 
-with open(r"day3/testData.txt") as rawData:
+with open(r"day3/testData2.txt") as rawData:
     data = []
     for line in rawData:
         line = line.rstrip()
@@ -54,3 +54,21 @@ with open(r"day3/testData.txt") as rawData:
 
 
 symbolCoords = getSymbolCoords(data)
+maxlen = len(data[0]) - 1
+totalPartNumber = 0
+for idx, line in enumerate(data):
+    getNumber = getNumberList(line)
+    for number in getNumber:
+        idxList = getNumberIndex(line, number)
+        leftCoords = getVerticalCoords(idxList[0], idx, "-", maxlen)
+        rightCoords = getVerticalCoords(idxList[1], idx, "+", maxlen)
+        HorizontalCoords = getHorizontalCoords(idxList, idx)
+        coordsToCheck = HorizontalCoords.union(*[leftCoords, rightCoords])
+        # print(f"idx list: {idxList}")
+        print(f"{number}: {coordsToCheck}")
+        if len(symbolCoords.intersection(coordsToCheck)) > 0:
+            totalPartNumber += int(number)
+
+
+print(f"symbol coords: {symbolCoords}")
+print(f"total part number: {totalPartNumber}")
